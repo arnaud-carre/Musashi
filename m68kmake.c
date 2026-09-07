@@ -55,7 +55,7 @@
  *       - Fix RTE to handle other format words
  *       - Add address error (and bus error?) handling
  */
-
+#define _CRT_SECURE_NO_WARNINGS
 
 static const char g_version[] = "4.60";
 
