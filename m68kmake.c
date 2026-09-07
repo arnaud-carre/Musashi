@@ -1240,7 +1240,7 @@ int main(int argc, char **argv)
 
 	printf("\n\tMusashi v%s 68000, 68008, 68010, 68EC020, 68020, 68EC030, 68030, 68EC040, 68040 emulator\n", g_version);
 	printf("\t\tCopyright Karl Stenerud (kstenerud@gmail.com)\n\n");
-
+#if 0
 	/* Check if output path and source for the input file are given */
     if(argc > 1)
 	{
@@ -1254,7 +1254,10 @@ int main(int argc, char **argv)
 		if(argc > 2)
 			strcpy(g_input_filename, argv[2]);
 	}
+#endif
 
+	strcpy(output_path, "..\\runtime\\");
+	strcpy(g_input_filename, "..\\m68k_in.c");
 
 	/* Open the files we need */
 	sprintf(filename, "%s%s", output_path, FILENAME_PROTOTYPE);

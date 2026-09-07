@@ -18,5 +18,8 @@
     <ClCompile Include="..\m68kmake.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\m68k_in.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

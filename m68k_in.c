@@ -917,23 +917,27 @@ M68KMAKE_OP(1111, 0, ., .)
 
 M68KMAKE_OP(040fpu0, 32, ., .)
 {
+#if M68K_EMULATE_040
 	if(CPU_TYPE_IS_030_PLUS(CPU_TYPE))
 	{
 		m68040_fpu_op0();
 		return;
 	}
 	m68ki_exception_1111();
+#endif
 }
 
 
 M68KMAKE_OP(040fpu1, 32, ., .)
 {
+#if M68K_EMULATE_040
 	if(CPU_TYPE_IS_030_PLUS(CPU_TYPE))
 	{
 		m68040_fpu_op1();
 		return;
 	}
 	m68ki_exception_1111();
+#endif
 }
 
 
@@ -8378,6 +8382,7 @@ M68KMAKE_OP(pflush, 32, ., .)
 
 M68KMAKE_OP(pmmu, 32, ., .)
 {
+#if M68K_EMULATE_PMMU
 	if ((CPU_TYPE_IS_EC020_PLUS(CPU_TYPE)) && (HAS_PMMU))
 	{
 		m68881_mmu_ops();
@@ -8386,6 +8391,7 @@ M68KMAKE_OP(pmmu, 32, ., .)
 	{
 		m68ki_exception_1111();
 	}
+#endif
 }
 
 M68KMAKE_OP(reset, 0, ., .)

@@ -48,8 +48,10 @@ extern void m68ki_build_opcode_table(void);
 #include "m68kops.h"
 #include "m68kcpu.h"
 
+#if M68K_EMULATE_040
 #include "m68kfpu.c"
 #include "m68kmmu.h" // uses some functions from m68kfpu.c which are static !
+#endif
 
 /* ======================================================================== */
 /* ================================= DATA ================================= */
