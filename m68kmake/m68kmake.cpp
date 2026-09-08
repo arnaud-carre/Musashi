@@ -82,7 +82,7 @@ static const char g_version[] = "4.60";
 #define MAX_LINE_LENGTH                 200	/* length of 1 line */
 #define MAX_BODY_LENGTH                 300	/* Number of lines in 1 function */
 #define MAX_REPLACE_LENGTH               30	/* Max number of replace strings */
-#define MAX_INSERT_LENGTH              5000	/* Max size of insert piece */
+#define MAX_INSERT_LENGTH              (128*1024)	/* Max size of insert piece */
 #define MAX_NAME_LENGTH                  30	/* Max length of ophandler name */
 #define MAX_SPEC_PROC_LENGTH              4	/* Max length of special processing str */
 #define MAX_SPEC_EA_LENGTH                5	/* Max length of specified EA str */
