@@ -135,7 +135,15 @@ class M68k
 {
 public:
 
+	void SetUserData(void* data) { m_user = data; }
 	int Execute(int cycles);
+
+	uint8 MemRead8(uint32 ad) { return m68ki_read_8(ad); }
+	uint16 MemRead16(uint32 ad) { return m68ki_read_16(ad); }
+	uint32 MemRead32(uint32 ad) { return m68ki_read_32(ad); }
+	void MemWrite8(uint32 ad, uint8 v) { m68ki_write_8(ad, v); }
+	void MemWrite16(uint32 ad, uint16 v) { m68ki_write_16(ad, v); }
+	void MemWrite32(uint32 ad, uint32 v) { m68ki_write_32(ad, v); }
 
 	m68ki_cpu_core m68ki_cpu;
 	int  m68ki_initial_cycles;
@@ -148,7 +156,7 @@ public:
 	uint    m68ki_aerr_fc;
 
 private:
-	void*	m_user;
+	void*	m_user = nullptr;
 
 public:
 	uint m68ki_read_imm_8(void);
