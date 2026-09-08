@@ -33,10 +33,6 @@
 #ifndef M68KCPU__HEADER
 #define M68KCPU__HEADER
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "m68k.h"
 
 #include <assert.h>
@@ -896,6 +892,7 @@ extern jmp_buf m68ki_aerr_trap;
 
 /* ----------------------------- Read / Write ----------------------------- */
 
+#if 0
 /* Read from the current address space */
 #define m68ki_read_8(A)  m68ki_read_8_fc (A, FLAG_S | m68ki_get_address_space())
 #define m68ki_read_16(A) m68ki_read_16_fc(A, FLAG_S | m68ki_get_address_space())
@@ -905,6 +902,14 @@ extern jmp_buf m68ki_aerr_trap;
 #define m68ki_write_8(A, V)  m68ki_write_8_fc (A, FLAG_S | FUNCTION_CODE_USER_DATA, V)
 #define m68ki_write_16(A, V) m68ki_write_16_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA, V)
 #define m68ki_write_32(A, V) m68ki_write_32_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA, V)
+#else
+#define m68ki_read_8(A)  M68k_Read8(m_user, A)
+#define m68ki_read_16(A) M68k_Read16(m_user, A)
+#define m68ki_read_32(A) M68k_Read32(m_user, A)
+#define m68ki_write_8(A)  M68k_Write8(m_user, A, V)
+#define m68ki_write_16(A) M68k_Write16(m_user, A, V)
+#define m68ki_write_32(A) M68k_Write32(m_user, A, V)
+#endif
 
 #if M68K_SIMULATE_PD_WRITES
 #define m68ki_write_32_pd(A, V) m68ki_write_32_pd_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA, V)
@@ -926,7 +931,6 @@ extern jmp_buf m68ki_aerr_trap;
 #define m68ki_read_data_8(A) 	m68ki_read_8_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA)
 #define m68ki_read_data_16(A) 	m68ki_read_16_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA)
 #define m68ki_read_data_32(A) 	m68ki_read_32_fc(A, FLAG_S | FUNCTION_CODE_USER_DATA)
-
 
 
 /* ======================================================================== */
@@ -2291,9 +2295,5 @@ static inline void m68ki_store_bitfield(uint32 addr, unsigned offset, unsigned w
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */
 /* ======================================================================== */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* M68KCPU__HEADER */

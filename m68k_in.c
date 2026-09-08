@@ -127,6 +127,9 @@ public:
 	uint m68ki_tracing = 0;
 	uint m68ki_address_space;
 
+private:
+	void*	m_user;
+
 public:
 	#include "m68k_func.inc"
 };
@@ -193,7 +196,7 @@ void m68ki_build_opcode_table(void)
 	for(i = 0; i < 0x10000; i++)
 	{
 		/* default to illegal */
-		m68ki_instruction_jump_table[i] = m68k_op_illegal;
+		m68ki_instruction_jump_table[i] = &M68k::op_illegal;
 		for(k=0;k<NUM_CPU_TYPES;k++)
 			m68ki_cycles[k][i] = 0;
 	}

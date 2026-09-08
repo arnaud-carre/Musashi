@@ -80,7 +80,7 @@ const char *const m68ki_cpu_names[] =
 #endif /* M68K_LOG_ENABLE */
 
 /* The CPU core */
-//m68ki_cpu_core m68ki_cpu = {0};
+m68ki_cpu_core m68ki_cpu = {0};
 
 #if M68K_EMULATE_ADDRESS_ERROR
 #ifdef _BSD_SETJMP_H
