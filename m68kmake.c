@@ -93,7 +93,7 @@ static const char g_version[] = "4.60";
 /* Default filenames */
 #define FILENAME_INPUT      "m68k_in.c"
 #define FILENAME_PROTOTYPE  "m68kops.h"
-#define FILENAME_TABLE      "m68kops.c"
+#define FILENAME_TABLE      "m68kops.cpp"
 
 
 /* Identifier sequences recognized by this program */
@@ -260,6 +260,7 @@ char g_input_filename[M68K_MAX_PATH] = FILENAME_INPUT;
 FILE* g_input_file = NULL;
 FILE* g_prototype_file = NULL;
 FILE* g_table_file = NULL;
+FILE* g_class_members_file;
 
 int g_num_functions = 0;  /* Number of functions processed */
 int g_num_primitives = 0; /* Number of function primitives read */
@@ -482,6 +483,7 @@ void error_exit(const char* fmt, ...)
 	if(g_prototype_file) fclose(g_prototype_file);
 	if(g_table_file) fclose(g_table_file);
 	if(g_input_file) fclose(g_input_file);
+	if (g_class_members_file) fclose(g_class_members_file);
 
 	exit(EXIT_FAILURE);
 }
@@ -498,6 +500,7 @@ void perror_exit(const char* fmt, ...)
 	if(g_prototype_file) fclose(g_prototype_file);
 	if(g_table_file) fclose(g_table_file);
 	if(g_input_file) fclose(g_input_file);
+	if (g_class_members_file) fclose(g_class_members_file);
 
 	exit(EXIT_FAILURE);
 }
@@ -774,7 +777,7 @@ void write_body(FILE* filep, body_struct* body, replace_struct* replace)
 /* Generate a base function name from an opcode struct */
 void get_base_name(char* base_name, opcode_struct* op)
 {
-	sprintf(base_name, "m68k_op_%s", op->name);
+	sprintf(base_name, "op_%s", op->name);
 	if(op->size > 0)
 		sprintf(base_name+strlen(base_name), "_%d", op->size);
 	if(strcmp(op->spec_proc, UNSPECIFIED) != 0)
@@ -786,7 +789,7 @@ void get_base_name(char* base_name, opcode_struct* op)
 /* Write the name of an opcode handler function */
 void write_function_name(FILE* filep, char* base_name)
 {
-	fprintf(filep, "static void %s(void)\n", base_name);
+	fprintf(filep, "void M68k::%s(void)\n", base_name);
 }
 
 void add_opcode_output_table_entry(opcode_struct* op, char* name)
@@ -798,7 +801,9 @@ void add_opcode_output_table_entry(opcode_struct* op, char* name)
 	ptr = g_opcode_output_table + g_opcode_output_table_length++;
 
 	*ptr = *op;
-	strcpy(ptr->name, name);
+//	strcpy(ptr->name, name);
+	sprintf(ptr->name, "&M68k::%s", name);
+
 	ptr->bits = num_bits(ptr->op_mask);
 }
 
@@ -871,6 +876,8 @@ void generate_opcode_handler(FILE* filep, body_struct* body, replace_struct* rep
 	get_base_name(str, op);
 	add_opcode_output_table_entry(op, str);
 	write_function_name(filep, str);
+
+	fprintf(g_class_members_file, "\t\tvoid\t%s(void);\n", str);
 
 	/* Add any replace strings needed */
 	if(ea_mode != EA_MODE_NONE)
@@ -1254,10 +1261,10 @@ int main(int argc, char **argv)
 		if(argc > 2)
 			strcpy(g_input_filename, argv[2]);
 	}
-#endif
-
+#else
 	strcpy(output_path, "..\\runtime\\");
 	strcpy(g_input_filename, "..\\m68k_in.c");
+#endif
 
 	/* Open the files we need */
 	sprintf(filename, "%s%s", output_path, FILENAME_PROTOTYPE);
@@ -1266,6 +1273,10 @@ int main(int argc, char **argv)
 
 	sprintf(filename, "%s%s", output_path, FILENAME_TABLE);
 	if((g_table_file = fopen(filename, "wt")) == NULL)
+		perror_exit("Unable to create table file (%s)\n", filename);
+
+	sprintf(filename, "%sm68k_func.inc", output_path);
+	if((g_class_members_file = fopen(filename, "wt")) == NULL)
 		perror_exit("Unable to create table file (%s)\n", filename);
 
 	if((g_input_file=fopen(g_input_filename, "rt")) == NULL)

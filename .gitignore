@@ -22,7 +22,8 @@ Thumbs.db
 # Make output
 *.o
 #m68kmake
-m68kops.?
+m68kops.*
+m68k_func.inc
 sim
 tags
 test_driver

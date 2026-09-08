@@ -108,13 +108,30 @@ M68KMAKE_PROTOTYPE_HEADER
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 M68KMAKE_PROTOTYPE_FOOTER
 
+#include "m68kcpu.h"
 
 /* Build the opcode handler table */
 void m68ki_build_opcode_table(void);
 
-extern void (*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
 extern unsigned char m68ki_cycles[][0x10000];
 
+class M68k
+{
+public:
+
+	int Execute(int cycles);
+
+	m68ki_cpu_core m68ki_cpu;
+	int  m68ki_initial_cycles;
+	int  m68ki_remaining_cycles = 0;                     /* Number of clocks remaining */
+	uint m68ki_tracing = 0;
+	uint m68ki_address_space;
+
+public:
+	#include "m68k_func.inc"
+};
+
+extern void (M68k::*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
 
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */
@@ -136,13 +153,13 @@ M68KMAKE_TABLE_HEADER
 
 #define NUM_CPU_TYPES 5
 
-void  (*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
+void  (M68k::*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
 unsigned char m68ki_cycles[NUM_CPU_TYPES][0x10000]; /* Cycles used by CPU type */
 
 /* This is used to generate the opcode handler jump table */
 typedef struct
 {
-	void (*opcode_handler)(void);        /* handler function */
+	void (M68k::*opcode_handler)(void);        /* handler function */
 	unsigned int  mask;                  /* mask on opcode */
 	unsigned int  match;                 /* what to match after masking */
 	unsigned char cycles[NUM_CPU_TYPES]; /* cycles each cpu type takes */
@@ -282,7 +299,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 M68KMAKE_OPCODE_HANDLER_HEADER
 
 #include <stdio.h>
-#include "m68kcpu.h"
+#include "m68kops.h"
 extern void m68040_fpu_op0(void);
 extern void m68040_fpu_op1(void);
 extern void m68881_mmu_ops(void);

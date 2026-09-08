@@ -42,7 +42,7 @@ extern void m68040_fpu_op0(void);
 extern void m68040_fpu_op1(void);
 extern void m68881_mmu_ops(void);
 extern unsigned char m68ki_cycles[][0x10000];
-extern void (*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
+//extern void (*m68ki_instruction_jump_table[0x10000])(void); /* opcode handler jump table */
 extern void m68ki_build_opcode_table(void);
 
 #include "m68kops.h"
@@ -80,7 +80,7 @@ const char *const m68ki_cpu_names[] =
 #endif /* M68K_LOG_ENABLE */
 
 /* The CPU core */
-m68ki_cpu_core m68ki_cpu = {0};
+//m68ki_cpu_core m68ki_cpu = {0};
 
 #if M68K_EMULATE_ADDRESS_ERROR
 #ifdef _BSD_SETJMP_H
@@ -955,6 +955,7 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 	}
 }
 
+#if 0
 /* Execute some instructions until we use up num_cycles clock cycles */
 /* ASG: removed per-instruction interrupt checks */
 int m68k_execute(int num_cycles)
@@ -1022,7 +1023,7 @@ int m68k_execute(int num_cycles)
 	/* return how many clocks we used */
 	return m68ki_initial_cycles - GET_CYCLES();
 }
-
+#endif
 
 int m68k_cycles_run(void)
 {

@@ -18,17 +18,17 @@
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\runtime\m68kops.c">
+    <ClCompile Include="..\..\runtime\m68kcpu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\runtime\m68kcpu.c">
+    <ClCompile Include="..\..\runtime\m68kops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\runtime\m68k.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\runtime\m68kops.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\runtime\m68k.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -36,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\runtime\m68kcpu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\runtime\m68kops.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
