@@ -127,10 +127,21 @@ public:
 	uint m68ki_tracing = 0;
 	uint m68ki_address_space;
 
+	uint    m68ki_aerr_address;
+	uint    m68ki_aerr_write_mode;
+	uint    m68ki_aerr_fc;
+
 private:
 	void*	m_user;
 
 public:
+	uint m68ki_read_imm_8(void);
+	uint m68ki_read_imm_16(void);
+	uint m68ki_read_imm_32(void);
+	uint m68ki_get_ea_pcdi(void);
+	uint m68ki_get_ea_pcix(void);
+
+
 	#include "m68k_func.inc"
 };
 

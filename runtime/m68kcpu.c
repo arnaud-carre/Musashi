@@ -48,19 +48,9 @@ extern void m68ki_build_opcode_table(void);
 #include "m68kops.h"
 #include "m68kcpu.h"
 
-#if M68K_EMULATE_040
-#include "m68kfpu.c"
-#include "m68kmmu.h" // uses some functions from m68kfpu.c which are static !
-#endif
-
 /* ======================================================================== */
 /* ================================= DATA ================================= */
 /* ======================================================================== */
-
-int  m68ki_initial_cycles;
-int  m68ki_remaining_cycles = 0;                     /* Number of clocks remaining */
-uint m68ki_tracing = 0;
-uint m68ki_address_space;
 
 #ifdef M68K_LOG_ENABLE
 const char *const m68ki_cpu_names[] =
@@ -80,7 +70,7 @@ const char *const m68ki_cpu_names[] =
 #endif /* M68K_LOG_ENABLE */
 
 /* The CPU core */
-m68ki_cpu_core m68ki_cpu = {0};
+//m68ki_cpu_core m68ki_cpu = {0};
 
 #if M68K_EMULATE_ADDRESS_ERROR
 #ifdef _BSD_SETJMP_H
@@ -90,11 +80,9 @@ jmp_buf m68ki_aerr_trap;
 #endif
 #endif /* M68K_EMULATE_ADDRESS_ERROR */
 
-uint    m68ki_aerr_address;
-uint    m68ki_aerr_write_mode;
-uint    m68ki_aerr_fc;
-
-jmp_buf m68ki_bus_error_jmp_buf;
+//uint    m68ki_aerr_address;
+//uint    m68ki_aerr_write_mode;
+//uint    m68ki_aerr_fc;
 
 /* Used by shift & rotate instructions */
 const uint8 m68ki_shift_8_table[65] =

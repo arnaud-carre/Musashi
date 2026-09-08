@@ -133,7 +133,7 @@
  * instruction.
  */
 #ifndef M68K_EMULATE_RESET
-#define M68K_EMULATE_RESET          M68K_OPT_OFF
+#define M68K_EMULATE_RESET          M68K_OPT_ON
 #define M68K_RESET_CALLBACK()       your_reset_handler_function()
 #endif
 
