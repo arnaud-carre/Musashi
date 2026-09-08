@@ -127,7 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\runtime\m68k.cpp" />
-    <ClCompile Include="..\..\runtime\m68kcpu.c" />
+    <ClCompile Include="..\..\runtime\m68kcpu.cpp" />
     <ClCompile Include="..\..\runtime\m68kops.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
