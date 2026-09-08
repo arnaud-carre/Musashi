@@ -393,7 +393,6 @@ typedef uint32 uint64;
 #define m68ki_write_16_fc(A, F, V) m68ki_write_16(A, V)
 #define m68ki_write_32_fc(A, F, V) m68ki_write_32(A, V)
 
-
 /* Enable or disable callback functions */
 #if M68K_EMULATE_INT_ACK
 	fail
@@ -412,7 +411,7 @@ typedef uint32 uint64;
 	#if M68K_EMULATE_RESET == M68K_OPT_SPECIFY_HANDLER
 		#define m68ki_output_reset() M68K_RESET_CALLBACK()
 	#else
-		#define m68ki_output_reset() CALLBACK_RESET_INSTR()
+	#define m68ki_output_reset() M68k_Reset_Callback(m_user)
 	#endif
 #else
 	#define m68ki_output_reset()
@@ -425,62 +424,37 @@ typedef uint32 uint64;
 #endif /* M68K_CMPILD_HAS_CALLBACK */
 
 #if M68K_RTE_HAS_CALLBACK
-	#if M68K_RTE_HAS_CALLBACK == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_rte_callback() M68K_RTE_CALLBACK()
-	#else
-		#define m68ki_rte_callback() CALLBACK_RTE_INSTR()
-	#endif
+	fail
 #else
 	#define m68ki_rte_callback()
 #endif /* M68K_RTE_HAS_CALLBACK */
 
 #if M68K_TAS_HAS_CALLBACK
-	#if M68K_TAS_HAS_CALLBACK == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_tas_callback() M68K_TAS_CALLBACK()
-	#else
-		#define m68ki_tas_callback() CALLBACK_TAS_INSTR()
-	#endif
+	_On_failure_
 #else
 	#define m68ki_tas_callback() 1
 #endif /* M68K_TAS_HAS_CALLBACK */
 
 #if M68K_ILLG_HAS_CALLBACK
-	#if M68K_ILLG_HAS_CALLBACK == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_illg_callback(opcode) M68K_ILLG_CALLBACK(opcode)
-	#else
-		#define m68ki_illg_callback(opcode) CALLBACK_ILLG_INSTR(opcode)
-	#endif
+	#define m68ki_illg_callback(opcode) M68k_Illegal_Callback(m_user, opcode)
 #else
 	#define m68ki_illg_callback(opcode) 0 // Default is 0 = not handled, exception will occur
 #endif /* M68K_ILLG_HAS_CALLBACK */
 
 #if M68K_TRAP_HAS_CALLBACK
-	#if M68K_TRAP_HAS_CALLBACK == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_trap_callback(trap) M68K_TRAP_CALLBACK(trap)
-	#else
-		#define m68ki_trap_callback(trap) CALLBACK_TRAP_INSTR(trap)
-	#endif
+	fail
 #else
 	#define m68ki_trap_callback(opcode) 0 // Default is 0 = not handled, exception will occur
 #endif /* M68K_TRAP_HAS_CALLBACK */
 
 #if M68K_INSTRUCTION_HOOK
-	#if M68K_INSTRUCTION_HOOK == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_instr_hook(pc) M68K_INSTRUCTION_CALLBACK(pc)
-	#else
-		#define m68ki_instr_hook(pc) CALLBACK_INSTR_HOOK(pc)
-	#endif
+	fail
 #else
 	#define m68ki_instr_hook(pc)
 #endif /* M68K_INSTRUCTION_HOOK */
 
 #if M68K_MONITOR_PC
 	fail
-	#if M68K_MONITOR_PC == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_pc_changed(A) M68K_SET_PC_CALLBACK(ADDRESS_68K(A))
-	#else
-		#define m68ki_pc_changed(A) CALLBACK_PC_CHANGED(ADDRESS_68K(A))
-	#endif
 #else
 	#define m68ki_pc_changed(A)
 #endif /* M68K_MONITOR_PC */
@@ -489,14 +463,6 @@ typedef uint32 uint64;
 /* Enable or disable function code emulation */
 #if M68K_EMULATE_FC
 	fail
-	#if M68K_EMULATE_FC == M68K_OPT_SPECIFY_HANDLER
-		#define m68ki_set_fc(A) M68K_SET_FC_CALLBACK(A)
-	#else
-		#define m68ki_set_fc(A) CALLBACK_SET_FC(A)
-	#endif
-	#define m68ki_use_data_space() m68ki_address_space = FUNCTION_CODE_USER_DATA
-	#define m68ki_use_program_space() m68ki_address_space = FUNCTION_CODE_USER_PROGRAM
-	#define m68ki_get_address_space() m68ki_address_space
 #else
 	#define m68ki_set_fc(A)
 	#define m68ki_use_data_space()
@@ -504,18 +470,9 @@ typedef uint32 uint64;
 	#define m68ki_get_address_space() FUNCTION_CODE_USER_DATA
 #endif /* M68K_EMULATE_FC */
 
-
 /* Enable or disable trace emulation */
 #if M68K_EMULATE_TRACE
 	fail
-	/* Initiates trace checking before each instruction (t1) */
-	#define m68ki_trace_t1() m68ki_tracing = FLAG_T1
-	/* adds t0 to trace checking if we encounter change of flow */
-	#define m68ki_trace_t0() m68ki_tracing |= FLAG_T0
-	/* Clear all tracing */
-	#define m68ki_clear_trace() m68ki_tracing = 0
-	/* Cause a trace exception if we are tracing */
-	#define m68ki_exception_if_trace() if(m68ki_tracing) m68ki_exception_trace()
 #else
 	#define m68ki_trace_t1()
 	#define m68ki_trace_t0()
@@ -549,8 +506,6 @@ typedef uint32 uint64;
 	#define M68K_DO_LOG(A)
 	#define M68K_DO_LOG_EMU(A)
 #endif
-
-
 
 /* -------------------------- EA / Operand Access ------------------------- */
 
@@ -760,12 +715,17 @@ fail
 #define m68ki_write_32_pd(A, V) m68ki_write_32((A), (V))
 #endif
 
- extern unsigned int M68k_Read8(void* user, unsigned int address);
- extern unsigned int M68k_Read16(void* user, unsigned int address);
- extern unsigned int M68k_Read32(void* user, unsigned int address);
- extern void M68k_Write8(void* user, unsigned int address, unsigned int value);
- extern void M68k_Write16(void* user, unsigned int address, unsigned int value);
- extern void M68k_Write32(void* user, unsigned int address, unsigned int value);
+extern unsigned int M68k_Read8(void* user, unsigned int address);
+extern unsigned int M68k_Read16(void* user, unsigned int address);
+extern unsigned int M68k_Read32(void* user, unsigned int address);
+extern void M68k_Write8(void* user, unsigned int address, unsigned int value);
+extern void M68k_Write16(void* user, unsigned int address, unsigned int value);
+extern void M68k_Write32(void* user, unsigned int address, unsigned int value);
+
+extern int M68k_Illegal_Callback(void* user, int);
+extern void M68k_Reset_Callback(void* user);
+
+
 
 /* Map PC-relative reads */
 #define m68ki_read_pcrel_8(A) 	m68ki_read_8(A)
@@ -860,19 +820,6 @@ typedef struct
 
 	const uint8* cyc_instruction;
 	const uint8* cyc_exception;
-
-	/* Callbacks to host */
-	int  (*int_ack_callback)(void* user, int int_line);           /* Interrupt Acknowledge */
-	void (*bkpt_ack_callback)(void* user, unsigned int data);     /* Breakpoint Acknowledge */
-	void (*reset_instr_callback)(void* user);               /* Called when a RESET instruction is encountered */
-	void (*cmpild_instr_callback)(void* user, unsigned int, int); /* Called when a CMPI.L #v, Dn instruction is encountered */
-	void (*rte_instr_callback)(void* user);                 /* Called when a RTE instruction is encountered */
-	int  (*tas_instr_callback)(void* user);                 /* Called when a TAS instruction is encountered, allows / disallows writeback */
-	int  (*illg_instr_callback)(void* user, int);                 /* Called when an illegal instruction is encountered, allows handling */
-	int  (*trap_instr_callback)(void* user, int);                 /* Called when a TRAP instruction is encountered, allows handling */
-	void (*pc_changed_callback)(void* user, unsigned int new_pc); /* Called when the PC changes by a large amount */
-	void (*set_fc_callback)(void* user, unsigned int new_fc);     /* Called when the CPU function code changes */
-	void (*instr_hook_callback)(void* user, unsigned int pc);     /* Called every instruction cycle prior to execution */
 
 } m68ki_cpu_core;
 

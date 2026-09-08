@@ -172,7 +172,7 @@
  * m68k_set_illg_instr_callback explicitly.
  */
 #ifndef M68K_ILLG_HAS_CALLBACK
-#define M68K_ILLG_HAS_CALLBACK      M68K_OPT_OFF
+#define M68K_ILLG_HAS_CALLBACK      M68K_OPT_ON
 #define M68K_ILLG_CALLBACK(opcode)  your_op_illg_handler_function(opcode)
 #endif
 

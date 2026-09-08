@@ -251,6 +251,10 @@ public:
 	void m68ki_exception_interrupt(uint int_level);
 	void m68ki_check_interrupts(void);
 
+	unsigned int m68k_get_reg(void* context, m68k_register_t regnum);
+	void m68k_set_reg(m68k_register_t regnum, unsigned int value);
+	void m68k_set_cpu_type(unsigned int cpu_type);
+
 	m68ki_bitfield_t m68ki_make_bf(uint32 lo, uint8 hi, unsigned offset);
 	m68ki_bitfield_t m68ki_load_bitfield(uint32 addr, unsigned offset, unsigned width);
 	uint32 lshift32_safe(uint32 val, unsigned shift);
@@ -258,6 +262,17 @@ public:
 	uint32 m68ki_bitfield_patch_ea(uint32 ea, int32 offset);
 	void m68ki_store_bitfield(uint32 addr, unsigned offset, unsigned width, uint32 res, m68ki_bitfield_t* bf);
 
+	int m68k_cycles_run(void);
+	int m68k_cycles_remaining(void);
+	void m68k_modify_timeslice(int cycles);
+	void m68k_end_timeslice(void);
+	void m68k_set_irq(unsigned int int_level);
+	void m68k_set_virq(unsigned int level, unsigned int active);
+	unsigned int m68k_get_virq(unsigned int level);
+	void m68k_init(void);
+	void m68k_pulse_bus_error(void);
+	void m68k_pulse_reset(void);
+	void m68k_pulse_halt(void);
 
 	#include "m68k_func.inc"
 };

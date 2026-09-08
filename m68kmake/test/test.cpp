@@ -24,6 +24,14 @@ void M68k_Write32(void* user, unsigned int address, unsigned int value)
 {
 }
 
+void M68k_Reset_Callback(void* user)
+{
+}
+
+int M68k_Illegal_Callback(void* user, int opcode)
+{
+	return 0;
+}
 
 int main()
 {
