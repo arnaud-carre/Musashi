@@ -195,8 +195,8 @@ typedef struct
 /* All modifications necessary for a specific EA mode of an instruction */
 typedef struct
 {
-	char* fname_add;
-	char* ea_add;
+	const char* fname_add;
+	const char* ea_add;
 	unsigned int mask_add;
 	unsigned int match_add;
 } ea_info_struct;
@@ -726,7 +726,7 @@ int extract_opcode_info(char* src, char* name, int* size, char* spec_proc, char*
 
 
 /* Add a search/replace pair to a replace structure */
-void add_replace_string(replace_struct* replace, char* search_str, char* replace_str)
+void add_replace_string(replace_struct* replace, const char* search_str, const char* replace_str)
 {
 	if(replace->length >= MAX_REPLACE_LENGTH)
 		error_exit("overflow in replace structure");
@@ -814,7 +814,7 @@ void add_opcode_output_table_entry(opcode_struct* op, char* name)
  */
 static int DECL_SPEC compare_nof_true_bits(const void* aptr, const void* bptr)
 {
-	const opcode_struct *a = aptr, *b = bptr;
+	const opcode_struct *a = (const opcode_struct*)aptr, *b = (const opcode_struct*)bptr;
 	if(a->bits != b->bits)
 		return a->bits - b->bits;
 	if(a->op_mask != b->op_mask)
@@ -869,7 +869,7 @@ void set_opcode_struct(opcode_struct* src, opcode_struct* dst, int ea_mode)
 void generate_opcode_handler(FILE* filep, body_struct* body, replace_struct* replace, opcode_struct* opinfo, int ea_mode)
 {
 	char str[MAX_LINE_LENGTH+1];
-	opcode_struct* op = malloc(sizeof(opcode_struct));
+	opcode_struct* op = (opcode_struct*)malloc(sizeof(opcode_struct));
 
 	/* Set the opcode structure and write the tables, prototypes, etc */
 	set_opcode_struct(opinfo, op, ea_mode);
@@ -964,7 +964,7 @@ void generate_opcode_cc_variants(FILE* filep, body_struct* body, replace_struct*
 	char replnot[20];
 	int i;
 	int old_length = replace->length;
-	opcode_struct* op = malloc(sizeof(opcode_struct));
+	opcode_struct* op = (opcode_struct*)malloc(sizeof(opcode_struct));
 
 	*op = *op_in;
 
@@ -1003,8 +1003,8 @@ void process_opcode_handlers(FILE* filep)
 	char oper_spec_proc[MAX_LINE_LENGTH+1];
 	char oper_spec_ea[MAX_LINE_LENGTH+1];
 	opcode_struct* opinfo;
-	replace_struct* replace = malloc(sizeof(replace_struct));
-	body_struct* body = malloc(sizeof(body_struct));
+	replace_struct* replace = (replace_struct*)malloc(sizeof(replace_struct));
+	body_struct* body = (body_struct*)malloc(sizeof(body_struct));
 
 	for(;;)
 	{
@@ -1263,7 +1263,7 @@ int main(int argc, char **argv)
 	}
 #else
 	strcpy(output_path, "..\\runtime\\");
-	strcpy(g_input_filename, "..\\m68k_in.c");
+	strcpy(g_input_filename, "m68k_in.cpp");
 #endif
 
 	/* Open the files we need */

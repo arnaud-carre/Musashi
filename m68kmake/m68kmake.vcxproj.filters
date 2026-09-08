@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\m68kmake.c">
+    <ClCompile Include="m68kmake.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\m68k_in.c">
+    <ClCompile Include="m68k_in.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
