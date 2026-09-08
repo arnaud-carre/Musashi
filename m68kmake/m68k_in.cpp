@@ -269,7 +269,6 @@ public:
 	void m68k_set_irq(unsigned int int_level);
 	void m68k_set_virq(unsigned int level, unsigned int active);
 	unsigned int m68k_get_virq(unsigned int level);
-	void m68k_init(void);
 	void m68k_pulse_bus_error(void);
 	void m68k_pulse_reset(void);
 	void m68k_pulse_halt(void);

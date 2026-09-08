@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "m68kops.h"
 
-
 /* Execute some instructions until we use up num_cycles clock cycles */
 /* ASG: removed per-instruction interrupt checks */
 int M68k::Execute(int num_cycles)
@@ -1234,17 +1233,16 @@ unsigned int M68k::m68k_get_virq(unsigned int level)
 	return (m68ki_cpu.virq_state & (1 << level)) ? 1 : 0;
 }
 
-void M68k::m68k_init(void)
+class AutoTableBuilder
 {
-	static uint emulation_initialized = 0;
-
-	/* The first call to this function initializes the opcode handler jump table */
-	if(!emulation_initialized)
+public:
+	AutoTableBuilder()
 	{
+		// we build the jmp table at exe init time
 		m68ki_build_opcode_table();
-		emulation_initialized = 1;
 	}
-}
+};
+static AutoTableBuilder sAutoTableBuilder;
 
 /* Trigger a Bus Error exception */
 void M68k::m68k_pulse_bus_error(void)
