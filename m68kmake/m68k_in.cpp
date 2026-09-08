@@ -446,9 +446,6 @@ M68KMAKE_OPCODE_HANDLER_HEADER
 
 #include <stdio.h>
 #include "m68kops.h"
-extern void m68040_fpu_op0(void);
-extern void m68040_fpu_op1(void);
-extern void m68881_mmu_ops(void);
 
 /* ======================================================================== */
 /* ========================= INSTRUCTION HANDLERS ========================= */

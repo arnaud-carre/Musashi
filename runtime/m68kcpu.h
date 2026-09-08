@@ -338,21 +338,6 @@ typedef uint32 uint64;
 #define PMMU_ENABLED	 m68ki_cpu.pmmu_enabled
 #define RESET_CYCLES	 m68ki_cpu.reset_cycles
 
-
-#define CALLBACK_INT_ACK     m68ki_cpu.int_ack_callback
-#define CALLBACK_BKPT_ACK    m68ki_cpu.bkpt_ack_callback
-#define CALLBACK_RESET_INSTR m68ki_cpu.reset_instr_callback
-#define CALLBACK_CMPILD_INSTR m68ki_cpu.cmpild_instr_callback
-#define CALLBACK_RTE_INSTR    m68ki_cpu.rte_instr_callback
-#define CALLBACK_TAS_INSTR    m68ki_cpu.tas_instr_callback
-#define CALLBACK_ILLG_INSTR    m68ki_cpu.illg_instr_callback
-#define CALLBACK_TRAP_INSTR  m68ki_cpu.trap_instr_callback
-#define CALLBACK_PC_CHANGED  m68ki_cpu.pc_changed_callback
-#define CALLBACK_SET_FC      m68ki_cpu.set_fc_callback
-#define CALLBACK_INSTR_HOOK  m68ki_cpu.instr_hook_callback
-
-
-
 /* ----------------------------- Configuration ---------------------------- */
 
 /* These defines are dependant on the configuration defines in m68kconf.h */
@@ -747,12 +732,6 @@ extern void M68k_Reset_Callback(void* user);
 /* =============================== PROTOTYPES ============================= */
 /* ======================================================================== */
 
-typedef union
-{
-	uint64 i;
-	double f;
-} fp_reg;
-
 typedef struct
 {
 	uint cpu_type;     /* CPU Type: 68000, 68008, 68010, 68EC020, 68020, 68EC030, 68030, 68EC040, or 68040 */
@@ -768,9 +747,6 @@ typedef struct
 	uint cacr;         /* Cache Control Register (m68020, unemulated) */
 	uint caar;         /* Cache Address Register (m68020, unemulated) */
 	uint ir;           /* Instruction Register */
-	#if M68K_EMULATE_040
-	floatx80 fpr[8];     /* FPU Data Register (m68030/040) */
-	#endif
 	uint fpiar;        /* FPU Instruction Address Register (m68040) */
 	uint fpsr;         /* FPU Status Register (m68040) */
 	uint fpcr;         /* FPU Control Register (m68040) */

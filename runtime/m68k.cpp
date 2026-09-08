@@ -604,8 +604,6 @@ void M68k::m68ki_exception_bus_error(void)
 //	longjmp(m68ki_bus_error_jmp_buf, 1);
 }
 
-extern int cpu_log_enabled;
-
 /* Exception for A-Line instructions */
 void M68k::m68ki_exception_1010(void)
 {
