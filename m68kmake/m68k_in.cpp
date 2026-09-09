@@ -2722,7 +2722,6 @@ M68KMAKE_OP(bfclr, 32, ., .)
 		uint width = word2;
 		uint mask_base;
 		m68ki_bitfield_t data;
-		uint mask_byte = 0;
 		uint ea = M68KMAKE_GET_EA_AY_8;
 
 
