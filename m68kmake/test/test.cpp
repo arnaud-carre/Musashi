@@ -33,6 +33,11 @@ int M68k_Illegal_Callback(void* user, int opcode)
 	return 0;
 }
 
+int M68k_TrapN_Callback(void* user, int opcode)
+{
+	return 1;
+}
+
 int main()
 {
 	printf("foo\n");
