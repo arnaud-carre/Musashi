@@ -259,7 +259,7 @@ public:
 	void m68ki_exception_interrupt(uint int_level);
 	void m68ki_check_interrupts(void);
 
-	unsigned int m68k_get_reg(void* context, m68k_register_t regnum);
+	unsigned int m68k_get_reg(m68k_register_t regnum);
 	void m68k_set_reg(m68k_register_t regnum, unsigned int value);
 	void m68k_set_cpu_type(unsigned int cpu_type);
 
@@ -2647,10 +2647,7 @@ M68KMAKE_OP(bfchg, 32, ., .)
 		sint offset = (word2>>6)&31;
 		uint width = word2;
 		uint mask_base;
-		//uint data_long;
 		m68ki_bitfield_t data;
-		uint data_byte = 0;
-		uint mask_byte = 0;
 		uint ea = M68KMAKE_GET_EA_AY_8;
 
 
