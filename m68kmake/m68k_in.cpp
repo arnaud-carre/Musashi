@@ -300,8 +300,6 @@ M68KMAKE_TABLE_HEADER
 /* ======================================================================== */
 /* ========================= OPCODE TABLE BUILDER ========================= */
 /* ======================================================================== */
-
-#include <stdio.h>
 #include "m68kops.h"
 
 #define NUM_CPU_TYPES 5
@@ -451,7 +449,6 @@ void m68ki_build_opcode_table(void)
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 M68KMAKE_OPCODE_HANDLER_HEADER
 
-#include <stdio.h>
 #include "m68kops.h"
 
 /* ======================================================================== */
@@ -8537,7 +8534,8 @@ M68KMAKE_OP(pflush, 32, ., .)
 {
 	if ((CPU_TYPE_IS_EC020_PLUS(CPU_TYPE)) && (HAS_PMMU))
 	{
-		fprintf(stderr,"68040: unhandled PFLUSH\n");
+		assert(false);
+//		fprintf(stderr,"68040: unhandled PFLUSH\n");
 		return;
 	}
 	m68ki_exception_1111();
