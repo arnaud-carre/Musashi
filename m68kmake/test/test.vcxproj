@@ -129,6 +129,14 @@
     <ClCompile Include="..\..\runtime\m68k.cpp" />
     <ClCompile Include="..\..\runtime\m68kcpu.cpp" />
     <ClCompile Include="..\..\runtime\m68kops.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops00.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops01.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops02.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops03.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops04.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops05.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops06.cpp" />
+    <ClCompile Include="..\..\runtime\m68kops07.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>

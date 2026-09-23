@@ -69,6 +69,7 @@ static const char g_version[] = "4.60";
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <assert.h>
 
 
 
@@ -993,6 +994,66 @@ void generate_opcode_cc_variants(FILE* filep, body_struct* body, replace_struct*
 	free(op);
 }
 
+
+class FileSplitter
+{
+public:
+	FileSplitter()
+	{
+		m_fileId = 0;
+		m_h = nullptr;
+	}
+	~FileSplitter()
+	{
+		if (m_h)
+			fclose(m_h);
+	}
+
+	FILE*	GetCurrentFileHandler()
+	{
+		if (m_h)
+		{
+			int size = ftell(m_h);
+			if ((size >= kMaxSplitSize) && (m_fileId < kMaxSplitFiles))
+			{
+				fclose(m_h);
+				m_h = nullptr;
+			}
+		}
+
+		if ( nullptr == m_h )
+			CreateNewSplit();
+
+		assert(m_h);
+		return m_h;
+	}
+
+private:
+
+	void CreateNewSplit()
+	{
+		if (m_h)
+			fclose(m_h);
+		char sFname[_MAX_PATH];
+		sprintf(sFname, "..\\runtime\\m68kops%02d.cpp", m_fileId);
+		m_h = fopen(sFname, "w");
+		assert(m_h);
+
+		fprintf(m_h, "#include \"m68kops.h\"\n\n");
+
+		m_fileId++;
+	}
+
+	static const int kMaxSplitFiles = 8;
+	static const int kMaxSplitSize = 80 * 1024;
+
+	int m_fileId;
+	FILE* m_h;
+};
+
+static FileSplitter sFs;
+
+
 /* Process the opcode handlers section of the input file */
 void process_opcode_handlers(FILE* filep)
 {
@@ -1008,6 +1069,7 @@ void process_opcode_handlers(FILE* filep)
 
 	for(;;)
 	{
+		filep = sFs.GetCurrentFileHandler();
 		/* Find the first line of the function */
 		func_name[0] = 0;
 		while(strstr(func_name, ID_OPHANDLER_NAME) == NULL)
