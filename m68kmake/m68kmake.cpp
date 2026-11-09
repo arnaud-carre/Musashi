@@ -69,7 +69,7 @@ static const char g_version[] = "4.60";
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
-
+#include <assert.h>
 
 
 /* ======================================================================== */
@@ -135,10 +135,6 @@ static const char g_version[] = "4.60";
 
 enum {
     CPU_TYPE_000=0,
-    CPU_TYPE_010,
-    CPU_TYPE_020,
-    CPU_TYPE_030,
-    CPU_TYPE_040,
     NUM_CPUS
 };
 
@@ -323,19 +319,19 @@ const int g_size_select_table[33] =
 /* TODO: correct timings for 030, 040 */
 const int g_ea_cycle_table[13][NUM_CPUS][3] =
 {/*       000           010           020           030           040  */
-	{{ 0,  0,  0}, { 0,  0,  0}, { 0,  0,  0}, { 0,  0,  0}, { 0,  0,  0}}, /* EA_MODE_NONE */
-	{{ 0,  4,  8}, { 0,  4,  8}, { 0,  4,  4}, { 0,  4,  4}, { 0,  4,  4}}, /* EA_MODE_AI   */
-	{{ 0,  4,  8}, { 0,  4,  8}, { 0,  4,  4}, { 0,  4,  4}, { 0,  4,  4}}, /* EA_MODE_PI   */
-	{{ 0,  4,  8}, { 0,  4,  8}, { 0,  4,  4}, { 0,  4,  4}, { 0,  4,  4}}, /* EA_MODE_PI7  */
-	{{ 0,  6, 10}, { 0,  6, 10}, { 0,  5,  5}, { 0,  5,  5}, { 0,  5,  5}}, /* EA_MODE_PD   */
-	{{ 0,  6, 10}, { 0,  6, 10}, { 0,  5,  5}, { 0,  5,  5}, { 0,  5,  5}}, /* EA_MODE_PD7  */
-	{{ 0,  8, 12}, { 0,  8, 12}, { 0,  5,  5}, { 0,  5,  5}, { 0,  5,  5}}, /* EA_MODE_DI   */
-	{{ 0, 10, 14}, { 0, 10, 14}, { 0,  7,  7}, { 0,  7,  7}, { 0,  7,  7}}, /* EA_MODE_IX   */
-	{{ 0,  8, 12}, { 0,  8, 12}, { 0,  4,  4}, { 0,  4,  4}, { 0,  4,  4}}, /* EA_MODE_AW   */
-	{{ 0, 12, 16}, { 0, 12, 16}, { 0,  4,  4}, { 0,  4,  4}, { 0,  4,  4}}, /* EA_MODE_AL   */
-	{{ 0,  8, 12}, { 0,  8, 12}, { 0,  5,  5}, { 0,  5,  5}, { 0,  5,  5}}, /* EA_MODE_PCDI */
-	{{ 0, 10, 14}, { 0, 10, 14}, { 0,  7,  7}, { 0,  7,  7}, { 0,  7,  7}}, /* EA_MODE_PCIX */
-	{{ 0,  4,  8}, { 0,  4,  8}, { 0,  2,  4}, { 0,  2,  4}, { 0,  2,  4}}, /* EA_MODE_I    */
+	{ 0,  0,  0}, /* EA_MODE_NONE */
+	{ 0,  4,  8}, /* EA_MODE_AI   */
+	{ 0,  4,  8}, /* EA_MODE_PI   */
+	{ 0,  4,  8}, /* EA_MODE_PI7  */
+	{ 0,  6, 10}, /* EA_MODE_PD   */
+	{ 0,  6, 10}, /* EA_MODE_PD7  */
+	{ 0,  8, 12}, /* EA_MODE_DI   */
+	{ 0, 10, 14}, /* EA_MODE_IX   */
+	{ 0,  8, 12}, /* EA_MODE_AW   */
+	{ 0, 12, 16}, /* EA_MODE_AL   */
+	{ 0,  8, 12}, /* EA_MODE_PCDI */
+	{ 0, 10, 14}, /* EA_MODE_PCIX */
+	{ 0,  4,  8}, /* EA_MODE_I    */
 };
 
 /* Extra cycles for JMP instruction (000, 010) */
@@ -622,20 +618,11 @@ size_t fgetline(char* buff, int nchars, FILE* file)
 int get_oper_cycles(opcode_struct* op, int ea_mode, int cpu_type)
 {
 	int size = g_size_select_table[op->size];
-
+	assert(CPU_TYPE_000 == cpu_type);
 	if(op->cpus[cpu_type] == '.')
 		return 0;
 
-	if(cpu_type < CPU_TYPE_020)
 	{
-		if(cpu_type == CPU_TYPE_010)
-		{
-			if(strcmp(op->name, "moves") == 0)
-				return op->cycles[cpu_type] + g_moves_cycle_table[ea_mode][size];
-			if(strcmp(op->name, "clr") == 0)
-				return op->cycles[cpu_type] + g_clr_cycle_table[ea_mode][size];
-		}
-
 		/* ASG: added these cases -- immediate modes take 2 extra cycles here */
 		if(cpu_type == CPU_TYPE_000 && ea_mode == EA_MODE_I &&
 		   ((strcmp(op->name, "add") == 0 && strcmp(op->spec_proc, "er") == 0) ||
@@ -836,7 +823,7 @@ void write_table_entry(FILE* filep, opcode_struct* op)
 {
 	int i;
 
-	fprintf(filep, "\t{%-28s, 0x%04x, 0x%04x, {",
+	fprintf(filep, "\t{%-28s, 0x%04x, 0x%04x, ",
 		op->name, op->op_mask, op->op_match);
 
 	for(i=0;i<NUM_CPUS;i++)
@@ -846,7 +833,7 @@ void write_table_entry(FILE* filep, opcode_struct* op)
 			fprintf(filep, ", ");
 	}
 
-	fprintf(filep, "}},\n");
+	fprintf(filep, "},\n");
 }
 
 /* Fill out an opcode struct with a specific addressing mode of the source opcode struct */
